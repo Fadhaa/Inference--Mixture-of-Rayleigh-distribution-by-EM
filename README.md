@@ -15,12 +15,23 @@ w<-simray(300,c(2,8),c(0.3,1))
 step 2:
 #estimate parameters by EM by the codeStart EM with initial par {1,4} and weights {0.5,0.5}
 
-qq=est(w$xi,c(1,4),c(0.5,0.5),200)
-qq$par\\
+
+
+qq<-est(w$xi,c(1,4),c(0.5,0.5),200)
+
+
+qq$par
+
+
 0.3260058 0.6739942 1.8784167 8.2740464
 
 #Output will be 
 #qq$par[1:2] estimated weights parameters
 #qq$par[3:4] estimated components parameters
 #qq$zj is estimated obsevation memberships
+
+
+
+
+
 
