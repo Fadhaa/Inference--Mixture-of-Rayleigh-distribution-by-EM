@@ -1,0 +1,104 @@
+
+
+install.packages("VGAM")
+library(VGAM)
+
+###simulation Xi that distributed as mixture of Rayleigh dist
+
+
+simray<-function(n,thet,wei){
+n<-n
+xi<-c()
+k<-length(thet)
+mx<-function(e){
+ss<-0
+for (h in 1:k){
+ss<-ss+wei[h]*drayleigh(xi[e],thet[h])
+}
+return(ss)}
+z<-c()
+newt<-c(0,wei)
+for (i in 1:n){
+ii<-0
+r<-runif(1,0,1)
+for (j in 1:k){
+if (newt[j]<=r && r<newt[j+1]){ii<-j}
+}
+rr<-as.numeric(rrayleigh(1,thet[ii]))
+z<-c(z,ii)
+xi<-c(xi,rr)
+}
+yi<-sapply(1:n, function(r) mx(r))
+lis<-list(xi=xi,z=z,yi=yi)
+return(lis)}
+
+
+est<-function(xx,L,W,r1){
+n<-length(xx)
+k<-length(L)
+par<-c(W,L)
+for (j in 1:r1){
+ff<-c()
+zz<-c()
+for (i in 1:n){
+pd1<-c()
+for (j in 1:k){
+pdf1<-par[j]*drayleigh(xx[i],par[j+k])
+pd1<-c(pd1,pdf1)
+}
+ff<-rbind(ff,pd1)
+}
+for (j in 1:k){
+zi<-sapply(1:n, function(e) (ff[e,j])/sum(ff[e,]))
+zz<-cbind(zz,as.vector(zi))
+}
+for (j in 1:k){
+par[j]<-sum(zz[,j])/n
+par[k+j]<-sqrt(sum(zz[,j]*(xx^2))/(2*sum(zz[,j])))
+}
+par<-c(sort(par[1:k]),sort(par[(k+1):(k+k)]))
+}
+zj<-sapply(1:n, function(e) which(zz[e,]==max(zz[e,])))
+lif<-list(par=par,zj=zj)
+return(lif)}
+          
+
+
+Mix_pdf<-function(X,par_initial,weight_initial){
+f<-c()
+for (j in 1:length(par_initial)){
+v<-sapply(1:length(X), function(r) weight_initial[j]*drayleigh(X[r],par_initial[j]))
+f<-cbind(f,v)
+}
+fx<-apply(f,1,sum)
+return(fx)}
+          
+
+w<-simray(300,c(2,8),c(0.3,1))
+          
+qq=est(w$xi,c(1,4),c(0.5,0.5),200)
+          
+fd<-Mix_pdf(w$xi,qq$par[3:4],qq$par[1:2])
+          
+
+
+png(filename="filepath.png")
+plot(w$xi,w$yi,xlab="",ylab="",xlim=c(0,max(w$xi)),ylim=c(0,max(w$yi)),col=w$z)
+par(new=TRUE)
+plot(w$xi,fd,xlab="Xi",ylab="Mix_pdf",xlim=c(0,max(w$xi)),ylim=c(0,max(w$yi)),col=qq$zj+2)
+par(new=TRUE)
+legend("topright", legend=c("True-pdf_com1","True-pdf_com2","Est_EM_com1","Est_EM_com2"),
+col=c(1,2,3,4), lty=1:2, cex=0.9,text.font=4, bg='white')
+dev.off()
+
+
+
+
+
+
+
+          
+           
+
+
+           
