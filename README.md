@@ -47,20 +47,6 @@ fd<-Mix_pdf(w$xi,qq$par[3:4],qq$par[1:2])
 
 
 
-
-
-
-
-
-![Uploading mix_png.png…]()
-
-
-
-
-
-
-
-
-
+![mix_png](https://github.com/Fadhaa/Inference--Mixture-of-Rayleigh-distribution-by-EM/assets/18240431/097929f7-e295-4816-acb9-92f9a13cd0d3)
 
 
